@@ -4,7 +4,21 @@ require_once 'eulerConstants.php';
 
 // Test the correctness of a given function and time the execution.
 function testCorrectness($function, $expected, $args = NULL) {
-    echo "\n##### BEGIN TEST $function: expected=$expected args='$args' ####";
+    $print_args = isset($args) ? $args : '';
+    if(is_array($print_args)) {
+        $print_args = 'Array(...)';
+    }
+
+    if(strlen($print_args) > 73) {
+        $print_args = substr($print_args, 0, 70).'...';
+    }
+
+    if(is_array($expected)) {
+        $print_expected = 'Array(...)';
+    } else {
+        $print_expected = $expected;
+    }
+    echo "\n##### BEGIN TEST $function: expected=$print_expected args='$print_args' ####";
 
     $start_time = microtime(true);
     $actual = $function($args);
@@ -65,8 +79,8 @@ function isPalindrome($s) {
 // Store factors we find in a table so we don't compute them again
 // If we have the factors already computed, return them
 // getFactors(50) => array(50=>50, 2=>2, 1=>1, 25=>25, 5=>5);
-function getFactors($num, $rainbowtable = array()) {
-    if($rainbowtable[$num]) {
+function getFactors($num, &$rainbowtable = array()) {
+    if(isset($rainbowtable[$num])) {
         return $rainbowtable[$num];
     }
     if($num == 1) {
@@ -90,7 +104,11 @@ function getFactors($num, $rainbowtable = array()) {
             $arrayI = getFactors($i, $rainbowtable);
             $rainbowtable[$i] = $arrayI;
 
-            $rainbowtable[$num] = array($num=>$num) + $arrayJ + $arrayI;
+            if(!isset($rainbowtable[$num])) {
+                $rainbowtable[$num] = array($num=>$num, 1=>1);
+            }
+
+            $rainbowtable[$num] = $rainbowtable[$num] + $arrayJ + $arrayI;
         }
     }
 
@@ -278,16 +296,17 @@ function largestProductOfFourInGrid($grid) {
     return $largest;
 }
 
-function countFactors($num, $rainbowtable) {
+function countFactors($num, &$rainbowtable) {
+    $before = $rainbowtable;
     $factors = getFactors($num, $rainbowtable);
     return count($factors);
 }
 
 function firstTraingularNumberWithFiveHundredDivisors() {
     $rainbowtable = array();
-    $mostFactors = array('num' => 28, 'numFactors' => 6);
-    $num = 28;
-    for($i=8;$i<10000;$i++) {
+    $mostFactors = array('num' => 1, 'numFactors' => 1);
+    $num = 1857240;
+    for($i=2;$i<600;$i++) {
         $num = $num + $i;
         $numFactors = countFactors($num, $rainbowtable);
         if($mostFactors['numFactors'] < $numFactors) {
@@ -338,20 +357,139 @@ function firstTenDigitsOfSummedGiantGrid($g) {
     return $digitArray;
 }
 
+function getNextCollatzNumber($n) {
+    if($n % 2 == 0) {
+        return $n / 2;
+    } else {
+        return ($n * 3) + 1;
+    }
+
+    return false;
+}
+
+function getCollatzSequence($n) {
+    $sequence = [$n];
+    $currentNum = $n;
+    while($currentNum > 1) {
+        $nextNum = getNextCollatzNumber($currentNum);
+        $sequence[] = $nextNum;
+        $currentNum = $nextNum;
+    }
+
+    return $sequence;
+}
+
+function longestCollatzSequenceUnderOneMillion() {
+    $largestSequence = [1];
+    for($i=2;$i<1000000;$i++) {
+        $currentSequence = getCollatzSequence($i);
+        if(count($currentSequence) > count($largestSequence)) {
+            $largestSequence = $currentSequence;
+        }
+    }
+
+    return $largestSequence[0];
+}
+
+function xy_is_reachable_from_path($path, $x, $y) {
+    $last_point = $path[count($path) - 1];
+    $px = $last_point[0];
+    $py = $last_point[1];
+
+    $over_1 = ( $py == $y ) && ( ($px + 1) == $x );
+    $down_1 = ( $px == $x ) && ( ($py + 1) == $y );
+    
+    //$o1 = $over_1 ? 'true' : 'false';
+    //$d1 = $down_1 ? 'true' : 'false';
+    //echo "\nDEBUG [$px,$py] => [$x,$y] : $o1 xor $d1";
+
+    return $over_1 xor $down_1;
+}
+
+function path_unnecessary($path, $x, $y) {
+    if(count($path) == 41) {
+        return false;
+    }
+
+    $last_point = $path[count($path) - 1];
+    $px = $last_point[0];
+    $py = $last_point[1];
+
+    $over_2 = ($px + 1) < $x;
+    $down_2 = ($py + 1) < $y;
+    
+    return $over_2 and $down_2;
+}
+
+function latticePathsFor20() {
+    $lattice = [
+        0 => [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],
+        1 => [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],
+        2 => [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],
+        3 => [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],
+        4 => [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],
+        5 => [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],
+        6 => [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],
+        7 => [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],
+        8 => [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],
+        9 => [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],
+       10 => [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],
+       11 => [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],
+       12 => [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],
+       13 => [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],
+       14 => [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],
+       15 => [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],
+       16 => [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],
+       17 => [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],
+       18 => [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],
+       19 => [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]
+   ];
+
+    $paths = [
+        array(0 => [0,0])
+    ];
+
+    foreach($lattice as $x => $row) {
+        foreach($row as $y) {
+            foreach($paths as $key => $path) {
+                if(xy_is_reachable_from_path($path, $x, $y)) {
+                    $path[] = [$x,$y];
+                    $paths[] = $path;
+                } else if(path_unnecessary($path, $x, $y)) {
+                    unset($paths[$key]);
+                    $paths = array_values($paths);
+                }
+            }
+        }
+    }
+
+    $routes = 0;
+    foreach($paths as $path) {
+        if(count($path) == 41) {
+            $routes++;
+        }
+    }
+
+    return $routes;
+}
+
 
 echo "####################################################################################\n";
 echo "#                                BGINNING TEST SUITE                               #\n";
 echo "####################################################################################\n";
 
-testCorrectness('sumOfMultiples3And5Below1000', 233168);                                        //  1
-testCorrectness('evenFibonacciBelow4Million', 4613732);                                         //  2
-testCorrectness('largestPrimeFactorOfHugeNumber', 6857);                                        //  3
-testCorrectness('largestThreeDigitPalindromeProduct', 906609);                                  //  4
-testCorrectness('smallestMultipleEvenlyDivisible', 232792560);                                  //  5
-testCorrectness('squareOfTheSumsMinusSumOfTheSquaresFor100', 25164150);                         //  6
-testCorrectness('TenThousandFirstPrimeNumber', 104743);                                         //  7
-testCorrectness('largestProductOf5numbersInN', 40824, $giantNumber8);                           //  8
-testCorrectness('pythagoreanTriplet', (float) 31875000);                                        //  9
-testCorrectness('summationOfPrimesBelow2million', 142913828922);                                // 10
-testCorrectness('largestProductOfFourInGrid', 70600674, $grid11);                               // 11
-testCorrectness('firstTenDigitsOfSummedGiantGrid', array(5,5,3,7,3,7,6,2,3,0), $fiftyDigs13);   // 13
+//testCorrectness('sumOfMultiples3And5Below1000', 233168);                                        //  1
+//testCorrectness('evenFibonacciBelow4Million', 4613732);                                         //  2
+//testCorrectness('largestPrimeFactorOfHugeNumber', 6857);                                        //  3
+//testCorrectness('largestThreeDigitPalindromeProduct', 906609);                                  //  4
+//testCorrectness('smallestMultipleEvenlyDivisible', 232792560);                                  //  5
+//testCorrectness('squareOfTheSumsMinusSumOfTheSquaresFor100', 25164150);                         //  6
+//testCorrectness('TenThousandFirstPrimeNumber', 104743);                                         //  7
+//testCorrectness('largestProductOf5numbersInN', 40824, $giantNumber8);                           //  8
+//testCorrectness('pythagoreanTriplet', (float) 31875000);                                        //  9
+//testCorrectness('summationOfPrimesBelow2million', 142913828922);                                // 10
+//testCorrectness('largestProductOfFourInGrid', 70600674, $grid11);                               // 11
+testCorrectness('firstTraingularNumberWithFiveHundredDivisors', 70600674);                      // 12
+//testCorrectness('firstTenDigitsOfSummedGiantGrid', array(5,5,3,7,3,7,6,2,3,0), $fiftyDigs13);   // 13
+//testCorrectness('longestCollatzSequenceUnderOneMillion', 837799);                               // 14
+//testCorrectness('latticePathsFor20', 516);                                                      // 15
