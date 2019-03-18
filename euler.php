@@ -478,18 +478,18 @@ echo "##########################################################################
 echo "#                                BGINNING TEST SUITE                               #\n";
 echo "####################################################################################\n";
 
-//testCorrectness('sumOfMultiples3And5Below1000', 233168);                                        //  1
-//testCorrectness('evenFibonacciBelow4Million', 4613732);                                         //  2
-//testCorrectness('largestPrimeFactorOfHugeNumber', 6857);                                        //  3
-//testCorrectness('largestThreeDigitPalindromeProduct', 906609);                                  //  4
-//testCorrectness('smallestMultipleEvenlyDivisible', 232792560);                                  //  5
-//testCorrectness('squareOfTheSumsMinusSumOfTheSquaresFor100', 25164150);                         //  6
-//testCorrectness('TenThousandFirstPrimeNumber', 104743);                                         //  7
-//testCorrectness('largestProductOf5numbersInN', 40824, $giantNumber8);                           //  8
-//testCorrectness('pythagoreanTriplet', (float) 31875000);                                        //  9
-//testCorrectness('summationOfPrimesBelow2million', 142913828922);                                // 10
-//testCorrectness('largestProductOfFourInGrid', 70600674, $grid11);                               // 11
-testCorrectness('firstTraingularNumberWithFiveHundredDivisors', 70600674);                      // 12
-//testCorrectness('firstTenDigitsOfSummedGiantGrid', array(5,5,3,7,3,7,6,2,3,0), $fiftyDigs13);   // 13
-//testCorrectness('longestCollatzSequenceUnderOneMillion', 837799);                               // 14
-//testCorrectness('latticePathsFor20', 516);                                                      // 15
+testCorrectness('sumOfMultiples3And5Below1000', 233168);                                        //  1
+testCorrectness('evenFibonacciBelow4Million', 4613732);                                         //  2
+testCorrectness('largestPrimeFactorOfHugeNumber', 6857);                                        //  3
+testCorrectness('largestThreeDigitPalindromeProduct', 906609);                                  //  4
+testCorrectness('smallestMultipleEvenlyDivisible', 232792560);                                  //  5
+testCorrectness('squareOfTheSumsMinusSumOfTheSquaresFor100', 25164150);                         //  6
+testCorrectness('TenThousandFirstPrimeNumber', 104743);                                         //  7
+testCorrectness('largestProductOf5numbersInN', 40824, $giantNumber8);                           //  8
+testCorrectness('pythagoreanTriplet', (float) 31875000);                                        //  9
+testCorrectness('summationOfPrimesBelow2million', 142913828922);                                // 10
+testCorrectness('largestProductOfFourInGrid', 70600674, $grid11);                               // 11
+//testCorrectness('firstTraingularNumberWithFiveHundredDivisors', 70600674);                      // 12
+testCorrectness('firstTenDigitsOfSummedGiantGrid', array(5,5,3,7,3,7,6,2,3,0), $fiftyDigs13);   // 13
+testCorrectness('longestCollatzSequenceUnderOneMillion', 837799);                               // 14
+testCorrectness('latticePathsFor20', 516);                                                      // 15
