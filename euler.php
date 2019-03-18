@@ -490,6 +490,6 @@ testCorrectness('pythagoreanTriplet', (float) 31875000);                        
 //testCorrectness('summationOfPrimesBelow2million', 142913828922);                                // 10
 testCorrectness('largestProductOfFourInGrid', 70600674, $grid11);                               // 11
 ////testCorrectness('firstTraingularNumberWithFiveHundredDivisors', 70600674);                      // 12
-testCorrectness('firstTenDigitsOfSummedGiantGrid', array(5,5,3,7,3,7,6,2,3,0), $fiftyDigs13);   // 13
+//testCorrectness('firstTenDigitsOfSummedGiantGrid', array(5,5,3,7,3,7,6,2,3,0), $fiftyDigs13);   // 13
 //testCorrectness('longestCollatzSequenceUnderOneMillion', 837799);                               // 14
 //testCorrectness('latticePathsFor20', 516);                                                      // 15
